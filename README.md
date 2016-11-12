@@ -31,8 +31,10 @@ This repository has the files below:
 
 ```
 .
-├── Jane.html
-├── Jane.ipynb
+├── Jane-RNN.html
+├── Jane-RNN.ipynb
+├── Jane-Sampling.html
+├── Jane-Sampling.ipynb
 ├── README.md
 ├── Report.pdf
 ├── data
@@ -48,7 +50,9 @@ This repository has the files below:
 
 - README.me : this file
 - Report.pdf : project report
-- Jane.html : HTML export of notebook
-- Jane.ipynb : Python notebook
+- Jane-RNN.html : HTML export of Jane-RNN notebook
+- Jane-RNN.ipynb : Python notebook for training
+- Jane-Sampling.html : HTML export of Jane-Sampling notebook
+- Jane-Sampling.ipynb : Python notebook for sampling
 - data : input data directory
 - saved : not pushed to the repository, automatically created once the training runs
