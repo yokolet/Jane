@@ -11801,7 +11801,7 @@ Make sure Tensorflow environment is on before starting this notebook.</p>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[3]:</div>
+<div class="prompt input_prompt">In&nbsp;[2]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span></span><span class="k">class</span> <span class="nc">Model</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
@@ -11833,9 +11833,8 @@ Make sure Tensorflow environment is on before starting this notebook.</p>
         <span class="bp">self</span><span class="o">.</span><span class="n">_initial_state</span> <span class="o">=</span> <span class="n">cell</span><span class="o">.</span><span class="n">zero_state</span><span class="p">(</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">tf</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
 
         <span class="c1"># looks up embeddings and gets input</span>
-        <span class="k">with</span> <span class="n">tf</span><span class="o">.</span><span class="n">device</span><span class="p">(</span><span class="s2">&quot;/cpu:0&quot;</span><span class="p">):</span>
-            <span class="n">embedding</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">get_variable</span><span class="p">(</span><span class="s2">&quot;embedding&quot;</span><span class="p">,</span> <span class="p">[</span><span class="n">vocab_size</span><span class="p">,</span> <span class="n">hidden_size</span><span class="p">])</span>
-            <span class="n">inputs</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">embedding_lookup</span><span class="p">(</span><span class="n">embedding</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_input_data</span><span class="p">)</span>
+        <span class="n">embedding</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">get_variable</span><span class="p">(</span><span class="s2">&quot;embedding&quot;</span><span class="p">,</span> <span class="p">[</span><span class="n">vocab_size</span><span class="p">,</span> <span class="n">hidden_size</span><span class="p">])</span>
+        <span class="n">inputs</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">embedding_lookup</span><span class="p">(</span><span class="n">embedding</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_input_data</span><span class="p">)</span>
 
         <span class="c1"># calculates dropouts.</span>
         <span class="k">if</span> <span class="n">is_training</span> <span class="ow">and</span> <span class="n">config</span><span class="o">.</span><span class="n">keep_prob</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
@@ -11866,20 +11865,7 @@ Make sure Tensorflow environment is on before starting this notebook.</p>
         <span class="bp">self</span><span class="o">.</span><span class="n">_final_state</span> <span class="o">=</span> <span class="n">state</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_probs</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">softmax</span><span class="p">(</span><span class="n">logits</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">is_training</span><span class="p">:</span>
-            <span class="k">return</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">_lr</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">trainable</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
-        <span class="n">tvars</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">trainable_variables</span><span class="p">()</span>
-        <span class="n">grads</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">clip_by_global_norm</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">gradients</span><span class="p">(</span><span class="n">cost</span><span class="p">,</span> <span class="n">tvars</span><span class="p">),</span>
-                                          <span class="n">config</span><span class="o">.</span><span class="n">max_grad_norm</span><span class="p">)</span>
-        <span class="c1"># optimazation</span>
-        <span class="n">optimizer</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">train</span><span class="o">.</span><span class="n">GradientDescentOptimizer</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lr</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_train_optimizer</span> <span class="o">=</span> <span class="n">optimizer</span><span class="o">.</span><span class="n">apply_gradients</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">grads</span><span class="p">,</span> <span class="n">tvars</span><span class="p">))</span>
-        
-        <span class="c1"># updates embeddings. computes similarity based on cosine distance</span>
-        <span class="n">norm</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">reduce_sum</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">square</span><span class="p">(</span><span class="n">embedding</span><span class="p">),</span> <span class="mi">1</span><span class="p">,</span> <span class="n">keep_dims</span><span class="o">=</span><span class="bp">True</span><span class="p">))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_normalized_embeddings</span> <span class="o">=</span> <span class="n">embedding</span> <span class="o">/</span> <span class="n">norm</span>
+        <span class="k">return</span>
 
     <span class="k">def</span> <span class="nf">assign_lr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">session</span><span class="p">,</span> <span class="n">lr_value</span><span class="p">):</span>
         <span class="n">session</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lr</span><span class="p">,</span> <span class="n">lr_value</span><span class="p">))</span>
@@ -11975,7 +11961,7 @@ Make sure Tensorflow environment is on before starting this notebook.</p>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[6]:</div>
+<div class="prompt input_prompt">In&nbsp;[3]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span></span><span class="k">class</span> <span class="nc">Config</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
@@ -11984,13 +11970,14 @@ Make sure Tensorflow environment is on before starting this notebook.</p>
     <span class="n">max_grad_norm</span> <span class="o">=</span> <span class="mi">5</span>      <span class="c1"># the maximum permissible norm of the gradient</span>
     <span class="n">num_layers</span> <span class="o">=</span> <span class="mi">3</span>         <span class="c1"># the number of LSTM layers</span>
     <span class="n">num_steps</span> <span class="o">=</span> <span class="mi">20</span>         <span class="c1"># the number of unrolled steps of LSTM</span>
-    <span class="n">hidden_size</span> <span class="o">=</span> <span class="mi">400</span>      <span class="c1"># the number of LSTM units (neurons)</span>
-    <span class="n">forget_bias</span><span class="o">=</span> <span class="mf">0.5</span>       <span class="c1"># the biases of the forget gate</span>
+    <span class="n">hidden_size</span> <span class="o">=</span> <span class="mi">500</span>      <span class="c1"># the number of LSTM units (neurons)</span>
     <span class="n">max_epoch</span> <span class="o">=</span> <span class="mi">6</span>          <span class="c1"># the number of epochs with the initial learning rate</span>
     <span class="n">max_max_epoch</span> <span class="o">=</span> <span class="mi">18</span>     <span class="c1"># the total number of epochs</span>
+    <span class="c1">#max_max_epoch = 1      # for debugging</span>
     <span class="n">keep_prob</span> <span class="o">=</span> <span class="mf">0.5</span>        <span class="c1"># the probability of keeping weights in dropout layer</span>
     <span class="n">lr_decay</span> <span class="o">=</span> <span class="mf">0.6</span>         <span class="c1"># the learning rate defay factor</span>
     <span class="n">batch_size</span> <span class="o">=</span> <span class="mi">20</span>        <span class="c1"># the batch size</span>
+    <span class="n">forget_bias</span><span class="o">=</span> <span class="mf">1.0</span>       <span class="c1"># the biases of the forget gate</span>
 </pre></div>
 
 </div>
@@ -12010,7 +11997,7 @@ Make sure Tensorflow environment is on before starting this notebook.</p>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[5]:</div>
+<div class="prompt input_prompt">In&nbsp;[4]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span></span><span class="n">save_dir</span> <span class="o">=</span> <span class="s2">&quot;saved&quot;</span>
@@ -12029,6 +12016,7 @@ Make sure Tensorflow environment is on before starting this notebook.</p>
                                                 <span class="n">sample_config</span><span class="o">.</span><span class="n">init_scale</span><span class="p">)</span>
     <span class="k">with</span> <span class="n">tf</span><span class="o">.</span><span class="n">variable_scope</span><span class="p">(</span><span class="s2">&quot;model&quot;</span><span class="p">,</span> <span class="n">reuse</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">initializer</span><span class="o">=</span><span class="n">initializer</span><span class="p">):</span>
         <span class="n">model</span> <span class="o">=</span> <span class="n">Model</span><span class="p">(</span><span class="n">is_training</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="n">sample_config</span><span class="p">)</span>
+    <span class="c1">#model = Model(is_training=True, config=sample_config)</span>
     <span class="k">with</span> <span class="n">tf</span><span class="o">.</span><span class="n">Session</span><span class="p">()</span> <span class="k">as</span> <span class="n">session</span><span class="p">:</span>
         <span class="n">tf</span><span class="o">.</span><span class="n">initialize_all_variables</span><span class="p">()</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
         <span class="n">saver</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">train</span><span class="o">.</span><span class="n">Saver</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">all_variables</span><span class="p">())</span>
@@ -12050,7 +12038,7 @@ Make sure Tensorflow environment is on before starting this notebook.</p>
 
 <div class="output_area"><div class="prompt"></div>
 <div class="output_subarea output_stream output_stderr output_text">
-<pre>WARNING:tensorflow:&lt;tensorflow.python.ops.rnn_cell.BasicLSTMCell object at 0x10efb1d50&gt;: Using a concatenated state is slower and will soon be deprecated.  Use state_is_tuple=True.
+<pre>WARNING:tensorflow:&lt;tensorflow.python.ops.rnn_cell.BasicLSTMCell object at 0x11163dc10&gt;: Using a concatenated state is slower and will soon be deprecated.  Use state_is_tuple=True.
 </pre>
 </div>
 </div>
@@ -12059,7 +12047,7 @@ Make sure Tensorflow environment is on before starting this notebook.</p>
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>Multi RNN Cell of 3
 Elizabeth
-Elizabeth laugh to which any other, that stopt this think?&#34; &#34;Oh, &#34;Yes--no--never young man of sure and I really ever could disapprove for me.&#34; CHAPTER paused. I can&#39;t only be happy to extraordinary on all the name of your pleasures, secret or very unreasonable; everybody am as going off, to confession at both of Miss Woodhouse, it I am afraid suppose; and his modesty, to-morrow of us first--she has the table) which gave a mother of it: her would be reasonably afraid of explain:--there &#34;Oh!&#34; I think, not altogether to be out of your side, by She as this, but you know.&#34; Emma saw his comparison without herself. &#34;I lives, could another, cannot think on my sister&#39;s poor earl&#39;s creature!&#34; said to inquiry, and I knew unlike his continuance in me: not not to have heard himself talking, I would not even happen if your heart to me as assuring you to convince you of Mr. Elton. I understood him at last address.-- &#34;Yes, she has been half off Carter and expressing his parade to the ladies--married confinement of a income.&#34; What deplore the unpretending, I refused. Had used all think to see it clear to doubt. The meeting immediately. no,
+Elizabeth justify his sister his abhorrence. reproof was an immediate civilities, but Mrs. Elton thought, with Mr. Churchill, but so, and I could certainly say to blush than and my situation, and my hope in questions; but I should speak in seeing of its beauty, reaching your family as now, if he was tranquil I go at the other that much; her brain could not make them well indifferent enough to undeceive education to express his engagement, then, said she, when she comes, she does not avoid wondering as yours. Mr. Darcy was clue, she could not repent. guessed Wickham was obliged to be gone forward again. quitted what passed, he added, in some return; said Marianne, about grave letter and agreed to his chair, affectedly had been, but Miss Woodhouse left me about, almost far to excite an&#39;t. the succeeding four acquainted; however, in the arrival, any higher other, and yet express their mother-in-law for advantage allowed repentance, my dear, said Elinor, that all the arrival, that the daughter was left to her, who seemed before; he was forced there, when she fancied so her daughter, and rather were graciousness, and it was hitherto happy however, was now she doubted
 </pre>
 </div>
 </div>

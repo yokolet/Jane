@@ -38,14 +38,13 @@ This repository has the files below:
 ├── README.md
 ├── Report.pdf
 ├── data
-│   ├── input.txt
-│   ├── pp_input.txt
-│   └── ss_input.txt
+│   ├── test.txt
+│   ├── train.txt
+│   └── valid.txt
 └── saved                <--- not pushed to the repo
     ├── checkpoint
     ├── model.ckpt
     ├── model.ckpt.meta
-    ├── summaries
 ```
 
 - README.me : this file
