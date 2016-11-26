@@ -1,8 +1,11 @@
-## Becoming Jane by Deep Learning
+# Becoming Jane by Deep Learning
 
 This repositry holds files for the Machine Learning Capstone Project.
-The project experiments RNN by Tensorflow and generates a sequence of
-words based on the Jane Austen's two novels.
+The project experiments RNN using Tensorflow and generates a sequence of
+words after training. The training is done by Jane Austen's novels.
+For training and validation, Pride and Prejudice, Sense and
+Sensibility, and Emma are used. For test, the first part of Persuation
+will be used. All data are from <http://www.fullbooks.com/>.
 
 The project report is [Report.pdf](Report.pdf).
 
